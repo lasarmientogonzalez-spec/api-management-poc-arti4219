@@ -7,6 +7,9 @@
  */
 
 import { createBackend } from '@backstage/backend-defaults';
+import { createBackendModule, coreServices } from '@backstage/backend-plugin-api';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
+import { MicrocksApiEntityProvider } from '@microcks/microcks-backstage-provider';
 
 const backend = createBackend();
 
@@ -68,5 +71,30 @@ backend.add(import('@backstage/plugin-signals-backend'));
 
 // mcp actions plugin
 backend.add(import('@backstage/plugin-mcp-actions-backend'));
+
+// Microcks catalog entity provider
+const catalogModuleMicrocks = createBackendModule({
+  pluginId: 'catalog',
+  moduleId: 'microcks-provider',
+  register(reg) {
+    reg.registerInit({
+      deps: {
+        catalog: catalogProcessingExtensionPoint,
+        config: coreServices.rootConfig,
+        logger: coreServices.logger,
+        scheduler: coreServices.scheduler,
+      },
+      async init({ catalog, config, logger, scheduler }) {
+        catalog.addEntityProvider(
+          MicrocksApiEntityProvider.fromConfig(config, {
+            logger,
+            scheduler,
+          }),
+        );
+      },
+    });
+  },
+});
+backend.add(catalogModuleMicrocks);
 
 backend.start();
