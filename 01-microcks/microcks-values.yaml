@@ -13,7 +13,7 @@ microcks:
   # Configuración de la imagen
   image:
     repository: microcks/microcks
-    tag: latest
+    tag: 1.15.0
     pullPolicy: IfNotPresent
 
   # Recursos asignados al pod de Microcks

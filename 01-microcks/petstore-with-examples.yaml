@@ -11,7 +11,7 @@ paths:
       summary: Busca mascotas por estado
       operationId: findPetsByStatus
       x-microcks-operation:
-        dispatcher: QUERY_ARGS
+        dispatcher: URI_PARAMS
         dispatcherRules: status
       parameters:
         - name: status
@@ -20,6 +20,13 @@ paths:
           schema:
             type: string
             enum: [available, pending, sold]
+          examples:
+            available:
+              value: available
+            pending:
+              value: pending
+            sold:
+              value: sold
       responses:
         "200":
           description: Lista de mascotas encontradas
@@ -67,7 +74,7 @@ paths:
       x-microcks-operation:
         dispatcher: SCRIPT
         dispatcherRules: |
-          def id = mockRequest.getPathParameter("petId")
+          def id = mockRequest.getURIParameters().get("petId")
           if (id == "1") return "pet_1"
           if (id == "2") return "pet_2"
           return "pet_1"

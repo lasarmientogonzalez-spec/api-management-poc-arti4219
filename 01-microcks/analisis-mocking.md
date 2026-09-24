@@ -1,42 +1,14 @@
-# =====================================================================
 # Análisis del Mocking Dinámico con Microcks
-# =====================================================================
 
-## Servicio analizado: Petstore 1.0.0 (`petstore-with-examples.yaml`)
+## 1. Operaciones expuestas por la API Petstore
 
-### 1. Operaciones disponibles
+El contrato `petstore-with-examples.yaml` expone 2 operaciones:
 
-<!-- Completa aquí — lista cada operación con su método HTTP y path -->
+| Método | Path | Dispatcher | Samples |
+|---|---|---|---|
+| GET | `/pet/findByStatus` | `URI_PARAMS` (filtra por el query param `status`) | 3 (`available`, `pending`, `sold`) |
+| GET | `/pet/{petId}` | `SCRIPT` (Groovy, decide según el `petId` de la URL) | 2 (`pet_1`, `pet_2`) |
 
-### 2. URL base del mock generado por Microcks
+## 2. URL base generada por Microcks
 
-<!-- Completa aquí — copia la URL base desde la UI de Microcks -->
-
-### 3. Llamadas curl al mock
-
-#### Llamada 1:
-```bash
-# Pega aquí el comando curl que ejecutaste
-```
-
-**Respuesta obtenida:**
-```json
-// Pega aquí la respuesta JSON
-```
-
-#### Llamada 2:
-```bash
-# Pega aquí el comando curl que ejecutaste
-```
-
-**Respuesta obtenida:**
-```json
-// Pega aquí la respuesta JSON
-```
-
-### 4. Ventaja del mocking dinámico vs. mock estático
-
-<!-- Completa aquí con tu análisis (mínimo 3 oraciones) -->
-<!-- Pista: piensa en qué pasa cuando cambias el contrato, cuando tienes múltiples
-     respuestas posibles según parámetros, o cuando el equipo de frontend necesita
-     desarrollar sin esperar al backend. -->
+Microcks genera automáticamente el mock siguiendo el patrón `http://{host}/rest/{title}/{version}/{path}`. Para esta API, con el `port-forward` activo en el puerto 9090:

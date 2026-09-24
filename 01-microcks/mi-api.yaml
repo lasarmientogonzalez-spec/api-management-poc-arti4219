@@ -1,0 +1,91 @@
+openapi: "3.0.0"
+info:
+  title: TaskManager
+  version: "1.0.0"
+  description: >
+    API propia de gestion de tareas para la PoC de Microcks (TODO 2).
+
+paths:
+  /tasks/findByStatus:
+    get:
+      summary: Busca tareas por estado
+      operationId: findTasksByStatus
+      x-microcks-operation:
+        dispatcher: URI_PARAMS
+        dispatcherRules: status
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [pending, completed]
+          examples:
+            pending:
+              value: pending
+            completed:
+              value: completed
+      responses:
+        "200":
+          description: Lista de tareas encontradas
+          content:
+            application/json:
+              examples:
+                pending:
+                  summary: Tareas pendientes
+                  value:
+                    - id: 1
+                      title: "Escribir informe de Microcks"
+                      status: "pending"
+                      assignee: "Alejandro"
+                    - id: 2
+                      title: "Revisar PR de Crossplane"
+                      status: "pending"
+                      assignee: "Alejandro"
+                completed:
+                  summary: Tareas completadas
+                  value:
+                    - id: 3
+                      title: "Configurar Argo CD"
+                      status: "completed"
+                      assignee: "Alejandro"
+
+  /tasks/{taskId}:
+    get:
+      summary: Busca una tarea por ID
+      operationId: getTaskById
+      x-microcks-operation:
+        dispatcher: SCRIPT
+        dispatcherRules: |
+          def id = mockRequest.getURIParameters().get("taskId")
+          if (id == "1") return "task_1"
+          if (id == "2") return "task_2"
+          return "task_1"
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Tarea encontrada
+          content:
+            application/json:
+              examples:
+                task_1:
+                  summary: Tarea con ID 1
+                  value:
+                    id: 1
+                    title: "Escribir informe de Microcks"
+                    status: "pending"
+                    assignee: "Alejandro"
+                    dueDate: "2026-09-30"
+                task_2:
+                  summary: Tarea con ID 2
+                  value:
+                    id: 2
+                    title: "Revisar PR de Crossplane"
+                    status: "pending"
+                    assignee: "Alejandro"
+                    dueDate: "2026-10-02"
